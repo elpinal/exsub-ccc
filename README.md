@@ -10,8 +10,8 @@ This project depends on [agda-categories](https://github.com/agda/agda-categorie
 
 ## Status
 
-[x] Soundness
-[ ] Completeness
+- [x] Soundness
+- [ ] Completeness
 
 ## References
 
