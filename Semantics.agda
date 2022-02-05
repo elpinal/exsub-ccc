@@ -74,6 +74,15 @@ module Semantics {o ℓ e}
     ⟦ ext γ e ⟧S = ⟨ ⟦ γ ⟧S , ⟦ e ⟧ ⟩
     ⟦ ! ⟧S = T.!
 
+  ⟦_⟧G_ : Gr -> (M : Structure) -> Obj
+  ⟦_⟧G_ g M = Structure.⟦_⟧G M g
+
+  ⟦_⟧T_ : Type -> (M : Structure) -> Obj
+  ⟦_⟧T_ A M = Structure.⟦_⟧T M A
+
+  ⟦_⟧F_ : (f : Func) -> (M : Structure) -> Structure.⟦_⟧T M (dom f) ⇒ Structure.⟦_⟧T M (cod f)
+  ⟦_⟧F_ f M = Structure.⟦_⟧F M f
+
   ⟦_⟧_ : forall {Γ A} -> Γ ⊢ A -> (M : Structure) -> Structure.⟦_⟧C M Γ ⇒ Structure.⟦_⟧T M A
   ⟦_⟧_ e M = Structure.⟦_⟧ M e
 
