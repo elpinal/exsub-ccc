@@ -3,7 +3,7 @@ open import Categories.Category.CartesianClosed
 
 open import Theory
 
-module Categories.Category.Instance.Models
+module Categories.Category.Construction.Models
   {ℓ₁ ℓ₂ ℓ₃}
   (Th : Theory.Theory ℓ₁ ℓ₂ ℓ₃)
   {o ℓ e}
