@@ -36,8 +36,8 @@ module NatBool where
     not-true≡false : forall Γ -> Ax Γ ⌊ bool ⌋ (func not (func true unit)) (func false unit)
     not-false≡true : forall Γ -> Ax Γ ⌊ bool ⌋ (func not (func false unit)) (func true unit)
     plus-identityˡ : Ax [ ⌊ nat ⌋ ] ⌊ nat ⌋
-      (func plus (pair (func zero unit) (var fzero (here ⌊ nat ⌋ []))))
-      (var fzero (here ⌊ nat ⌋ []))
+      (func plus (pair (func zero unit) var))
+      var
 
   Th : Theory lzero lzero lzero
   Th = record { Sg = Sg ; Ax = Ax }

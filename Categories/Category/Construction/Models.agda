@@ -25,9 +25,8 @@ module Categories.Category.Construction.Models
   open import Categories.Morphism.Reasoning 𝒞
 
   open import Syntax
-  open import Semantics 𝒞 cartesianClosed Th
-
   open Theory.Theory Th
+  open import Semantics 𝒞 cartesianClosed Sg
   open Signature Sg
 
   open import Data.Product using (Σ; Σ-syntax; proj₁; proj₂)
@@ -39,7 +38,7 @@ module Categories.Category.Construction.Models
   ⁂-id : forall {A B} -> id {A = A} ⁂ id {A = B} ≈ id
   ⁂-id = Equiv.trans (⟨⟩-cong₂ identityˡ identityˡ) η
 
-  module Homomorphism {M N : Model}
+  module Homomorphism {M N : Model 𝒞 cartesianClosed Th}
     (h : (g : Gr) -> ⟦ g ⟧G (proj₁ M) ≅ ⟦ g ⟧G (proj₁ N))
     where
     open _≅_
@@ -195,7 +194,7 @@ module Categories.Category.Construction.Models
         }
       }
 
-  record homomorphism (M N : Model) : Set (ℓ₁ ⊔ ℓ₂ ⊔ ℓ ⊔ e) where
+  record homomorphism (M N : Model 𝒞 cartesianClosed Th) : Set (ℓ₁ ⊔ ℓ₂ ⊔ ℓ ⊔ e) where
     field
       h : (g : Gr) -> ⟦ g ⟧G (proj₁ M) ≅ ⟦ g ⟧G (proj₁ N)
 
@@ -204,11 +203,11 @@ module Categories.Category.Construction.Models
     field
       comm : (f : Func) -> _≅_.from (H (cod f)) ∘ ⟦ f ⟧F (proj₁ M) ≈ ⟦ f ⟧F (proj₁ N) ∘ _≅_.from (H (dom f))
 
-  module _ {M N : Model} where
+  module _ {M N : Model 𝒞 cartesianClosed Th} where
     _≗_ : Rel (homomorphism M N) (ℓ₁ ⊔ e)
     _≗_ x y = (g : Gr) -> _≅_.from (homomorphism.h x g) ≈ _≅_.from (homomorphism.h y g)
 
-  module Id {M : Model} where
+  module Id {M : Model 𝒞 cartesianClosed Th} where
     open Homomorphism {M} {M} (λ _ → IsEquivalence.refl ≅-isEquivalence)
     open Structure (proj₁ M)
 
@@ -279,7 +278,7 @@ module Categories.Category.Construction.Models
     id′ : homomorphism M M
     id′ = record { h = λ _ → IsEquivalence.refl ≅-isEquivalence ; comm = comm }
 
-  module Compose {M N O : Model} where
+  module Compose {M N O : Model 𝒞 cartesianClosed Th} where
     open _≅_
 
     compose : homomorphism N O -> homomorphism M N -> homomorphism M O
@@ -377,7 +376,7 @@ module Categories.Category.Construction.Models
 
   Models : Category (ℓ₁ ⊔ ℓ₂ ⊔ ℓ₃ ⊔ o ⊔ ℓ ⊔ e) (ℓ₁ ⊔ ℓ₂ ⊔ ℓ ⊔ e) (ℓ₁ ⊔ e)
   Models = record
-             { Obj = Model
+             { Obj = Model 𝒞 cartesianClosed Th
              ; _⇒_ = homomorphism
              ; _≈_ = _≗_
              ; id = Id.id′
