@@ -38,6 +38,8 @@ record IsCartesianClosedF
   field
     isCartesianF : IsCartesianF C′ D′ F
 
+  module isCartesianF = IsCartesianF isCartesianF
+
   conv : forall {A B : Category.Obj CU} -> DU [ F₀ (B ^C A) , F₀ B ^D F₀ A ]
   conv {A} {B} =
     CartesianClosed.λg CC₂
@@ -46,4 +48,17 @@ record IsCartesianClosedF
   field
     F-preserve-^ : forall {A B : Category.Obj CU} -> IsIso (conv {A} {B})
 
+  module F-preserve-^ {A B : Category.Obj CU} = IsIso (F-preserve-^ {A} {B})
+
   -- Note that F is called strict if `conv` ≈ id.
+
+record CartesianClosedF
+  (C : CartesianClosedCategory o ℓ e)
+  (D : CartesianClosedCategory o′ ℓ′ e′)
+  : Set (levelOfTerm C ⊔ levelOfTerm D) where
+  field
+    F : Functor (CartesianClosedCategory.U C) (CartesianClosedCategory.U D)
+    isCartesianClosed : IsCartesianClosedF C D F
+
+  open Functor F public
+  open IsCartesianClosedF isCartesianClosed public
