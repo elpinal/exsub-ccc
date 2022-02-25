@@ -75,3 +75,8 @@ module Term {ℓ₁ ℓ₂} (Sg : Signature ℓ₁ ℓ₂) where
     app : forall {Γ A B} -> Γ ⊢ A => B -> Γ ⊢ A -> Γ ⊢ B
 
     _[_] : forall {Γ Γ′ A} -> Γ′ ⊢ A -> Γ ⊨ Γ′ -> Γ ⊢ A
+
+  infix 10 _×id′
+
+  _×id′ : forall {Γ Γ′} {A} -> Γ ⊨ Γ′ -> A ∷ Γ ⊨ A ∷ Γ′
+  γ ×id′ = ext (γ ∙ weaken) var

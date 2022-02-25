@@ -93,6 +93,7 @@ module Soundness {o ℓ e}
     soundness (cong/snd D) = ∘-resp-≈ʳ (soundness D)
     soundness (cong/app D D₁) = ∘-resp-≈ʳ (⟨⟩-cong₂ (soundness D) (soundness D₁))
     soundness (cong/abs D) = λ-cong (soundness D)
+    soundness (cong/func D) = ∘-resp-≈ Equiv.refl (soundness D)
 
     soundness-sub refl = Equiv.refl
     soundness-sub (sym D) = Equiv.sym (soundness-sub D)
@@ -110,3 +111,4 @@ module Soundness {o ℓ e}
     soundness-sub (cong/∙ D D₁) = ∘-resp-≈ (soundness-sub D) (soundness-sub D₁)
     soundness-sub id∙ˡ = identityˡ
     soundness-sub id∙ʳ = identityʳ
+    soundness-sub assoc∙ = assoc

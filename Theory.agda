@@ -47,6 +47,9 @@ record Theory ℓ₁ ℓ₂ ℓ₃ : Set (suc (ℓ₁ ⊔ ℓ₂ ⊔ ℓ₃)) wh
     eta/=> : forall {Γ} {A B} (e : Γ ⊢ A => B) -> Γ ⊢ abs (app (e [ weaken ]) var) ≡ e
 
     -- cong
+    cong/func : forall {Γ} {f : Func} {e e′ : Γ ⊢ dom f}
+      -> Γ ⊢ e ≡ e′
+      -> Γ ⊢ func f e ≡ func f e′
     cong/sub : forall {Γ Γ′} {γ γ′ : Γ ⊨ Γ′} {A} {e e′ : Γ′ ⊢ A}
       -> Γ ⊨ γ ≡ γ′
       -> Γ′ ⊢ e ≡ e′
@@ -102,7 +105,8 @@ record Theory ℓ₁ ℓ₂ ℓ₃ : Set (suc (ℓ₁ ⊔ ℓ₂ ⊔ ℓ₃)) wh
     id∙ˡ : forall {Γ Γ′} {γ : Γ ⊨ Γ′} -> Γ ⊨ id ∙ γ ≡ γ
     id∙ʳ : forall {Γ Γ′} {γ : Γ ⊨ Γ′} -> Γ ⊨ γ ∙ id ≡ γ
 
-    -- associativity
+    assoc∙ : forall {Γ Γ′ Γ′′ Γ′′′} {γ₁ : Γ′′ ⊨ Γ′′′} {γ₂ : Γ′ ⊨ Γ′′} {γ₃ : Γ ⊨ Γ′}
+      -> Γ ⊨ (γ₁ ∙ γ₂) ∙ γ₃ ≡ γ₁ ∙ (γ₂ ∙ γ₃)
 
     !-unique : forall {Γ} {γ : Γ ⊨ []} -> Γ ⊨ ! ≡ γ
     η-pair : forall {Γ : Context} {A : Type}
@@ -122,12 +126,27 @@ record Theory ℓ₁ ℓ₂ ℓ₃ : Set (suc (ℓ₁ ⊔ ℓ₂ ⊔ ℓ₃)) wh
       -> Γ ⊨ δ ≡ δ′
       -> Γ ⊨ γ ∙ δ ≡ γ′ ∙ δ′
 
+  ×id′-∙ : forall {Γ Γ′ Γ′′} {γ′ : Γ ⊨ Γ′} {γ : Γ′ ⊨ Γ′′} {A}
+    -> A ∷ Γ ⊨ γ ×id′ ∙ γ′ ×id′ ≡ (γ ∙ γ′) ×id′
+  ×id′-∙ = trans ext∙ (cong/ext (trans assoc∙ (trans (cong/∙ refl weaken/ext) (sym assoc∙))) (var/ext _ _))
+
+  ×id′-ext : forall {Γ Γ′ Γ′′} {γ′ : Γ ⊨ Γ′} {γ : Γ′ ⊨ Γ′′} {A} {e : Γ ⊢ A}
+    -> Γ ⊨ γ ×id′ ∙ ext γ′ e ≡ ext (γ ∙ γ′) e
+  ×id′-ext = trans ext∙ (cong/ext (trans assoc∙ (cong/∙ refl weaken/ext)) (var/ext _ _))
+
   open import Relation.Binary.Bundles
 
   TermSetoid : forall {Γ : Context} {A : Type} -> Setoid (ℓ₁ ⊔ ℓ₂) (ℓ₁ ⊔ ℓ₂ ⊔ ℓ₃)
   TermSetoid {Γ} {A} = record
              { Carrier = Γ ⊢ A
              ; _≈_ = λ e₁ e₂ → Γ ⊢ e₁ ≡ e₂
+             ;isEquivalence = record { refl = refl ; sym = sym ; trans = trans }
+             }
+
+  SubstSetoid : forall {Γ : Context} {Γ′ : Context} -> Setoid (ℓ₁ ⊔ ℓ₂) (ℓ₁ ⊔ ℓ₂ ⊔ ℓ₃)
+  SubstSetoid {Γ} {Γ′} = record
+             { Carrier = Γ ⊨ Γ′
+             ; _≈_ = λ γ₁ γ₂ → Γ ⊨ γ₁ ≡ γ₂
              ;isEquivalence = record { refl = refl ; sym = sym ; trans = trans }
              }
 

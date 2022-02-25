@@ -44,6 +44,7 @@ module Categories.Category.Construction.Models
     open _≅_
     open Iso
 
+    -- TODO: rewrite with [_]-resp-∘ to shorten this proof.
     H : (A : Type) -> ⟦ A ⟧T (proj₁ M) ≅ ⟦ A ⟧T (proj₁ N)
     H ⌊ g ⌋ = h g
     H Unit = T.up-to-iso terminal terminal
