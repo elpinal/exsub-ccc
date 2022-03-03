@@ -17,11 +17,13 @@ module Soundness {o ℓ e}
   open import Categories.Category.Cartesian 𝒞
   open import Categories.Category.BinaryProducts 𝒞
   open import Categories.Object.Product 𝒞
+  open import Categories.Object.Terminal 𝒞 using (Terminal)
 
   open Category 𝒞
   open CartesianClosed CC
   open Cartesian cartesian
   open BinaryProducts products
+  module T = Terminal terminal
 
   open import Data.Product using (Σ; Σ-syntax; proj₁; proj₂)
 

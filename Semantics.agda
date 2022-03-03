@@ -26,7 +26,7 @@ module Semantics {o ℓ e}
   open CartesianClosed CC
   open Cartesian cartesian
   open BinaryProducts products
-  module T = Terminal terminal -- TODO: make this private.
+  private module T = Terminal terminal
 
   open Signature Sg
   open Term Sg

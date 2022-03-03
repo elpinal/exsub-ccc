@@ -231,6 +231,9 @@ private
   open import Categories.Morphism.Reasoning Cl
   import Categories.Object.Product Cl as Prod
 
+  open import Categories.Object.Terminal Cl using (Terminal)
+  module T = Terminal (Cartesian.terminal cartesian)
+
   helper : forall {Γ} {A} {e : Γ ⊢ A} -> ⟦ e ⟧ ≈ to/⟦⟧T A ∘ (e [ γC ])
   helperS : forall {Γ Γ′} {γ : Γ ⊨ Γ′} -> _ ⊨ γC ∙ ext ! ⟦ γ ⟧S ≡ γ ∙ γC
 

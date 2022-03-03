@@ -13,7 +13,7 @@ module Categories.Category.Construction.Models
 
   open import Categories.Category.Cartesian 𝒞
   open import Categories.Category.BinaryProducts 𝒞
-  import Categories.Object.Terminal 𝒞 as T
+  open import Categories.Object.Terminal 𝒞
   import Categories.Object.Product 𝒞 as P
   open import Categories.Morphism 𝒞
 
@@ -21,6 +21,7 @@ module Categories.Category.Construction.Models
   open CartesianClosed cartesianClosed
   open Cartesian cartesian
   open BinaryProducts products
+  module T = Terminal terminal
   open HomReasoning
   open import Categories.Morphism.Reasoning 𝒞
 
@@ -47,7 +48,7 @@ module Categories.Category.Construction.Models
     -- TODO: rewrite with [_]-resp-∘ to shorten this proof.
     H : (A : Type) -> ⟦ A ⟧T (proj₁ M) ≅ ⟦ A ⟧T (proj₁ N)
     H ⌊ g ⌋ = h g
-    H Unit = T.up-to-iso terminal terminal
+    H Unit = up-to-iso terminal terminal
     H (A * A₁) = record
       { from = (from (H A)) ⁂ from (H A₁)
       ; to = to (H A) ⁂ to (H A₁)
