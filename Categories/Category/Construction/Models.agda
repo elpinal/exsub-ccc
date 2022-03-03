@@ -16,6 +16,9 @@ module Categories.Category.Construction.Models
   open import Categories.Object.Terminal 𝒞
   import Categories.Object.Product 𝒞 as P
   open import Categories.Morphism 𝒞
+  open import Categories.Functor.Construction.Product using (Product)
+  open import Categories.Functor.Construction.Exponential using (Exp)
+  open import Categories.Functor.Properties using ([_]-resp-≅)
 
   open Category 𝒞
   open CartesianClosed cartesianClosed
@@ -30,7 +33,7 @@ module Categories.Category.Construction.Models
   open import Semantics 𝒞 cartesianClosed Sg
   open Signature Sg
 
-  open import Data.Product using (Σ; Σ-syntax; proj₁; proj₂)
+  open import Data.Product using (Σ; Σ-syntax; proj₁; proj₂; _,_)
 
   open import Relation.Binary using (Rel; IsEquivalence)
 
@@ -45,156 +48,21 @@ module Categories.Category.Construction.Models
     open _≅_
     open Iso
 
-    -- TODO: rewrite with [_]-resp-∘ to shorten this proof.
     H : (A : Type) -> ⟦ A ⟧T (proj₁ M) ≅ ⟦ A ⟧T (proj₁ N)
     H ⌊ g ⌋ = h g
     H Unit = up-to-iso terminal terminal
-    H (A * A₁) = record
-      { from = (from (H A)) ⁂ from (H A₁)
-      ; to = to (H A) ⁂ to (H A₁)
-      ; iso = record
-        { isoˡ = Equiv.trans ⁂∘⁂ ( Equiv.trans (⁂-cong₂ (isoˡ (iso (H A))) (isoˡ (iso (H A₁)))) (Equiv.trans (⟨⟩-cong₂ identityˡ identityˡ) η) )
-        ; isoʳ = Equiv.trans ⁂∘⁂ ( Equiv.trans (⁂-cong₂ (isoʳ (iso (H A))) (isoʳ (iso (H A₁)))) (Equiv.trans (⟨⟩-cong₂ identityˡ identityˡ) η) )
-        }
-      }
-    H (A => A₁) = record
-      { from = λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A)))
-      ; to = λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A)))
-      ; iso = record
-        { isoˡ =
-          begin
-            λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A)))
-            ∘
-            λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A)))
-          ≈⟨ CartesianClosed.exp.subst cartesianClosed product product ⟩
-            λg (
-              (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A))) ∘ (λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A))) ⁂ Category.id 𝒞)
-            )
-          ≈⟨ λ-cong assoc²' ⟩
-            λg (
-              to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A)) ∘ (λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A))) ⁂ Category.id 𝒞)
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ ⁂∘⁂)) ⟩
-            λg (
-              to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ∘ λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A))) ⁂ from (H A) ∘ Category.id 𝒞)
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ (⁂-cong₂ identityˡ identityʳ))) ⟩
-            λg (
-              to (H A₁) ∘ eval′ ∘ (λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (to (H A)))) ⁂ from (H A))
-            )
-          ≈˘⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ (⁂-cong₂ identityʳ identityˡ))) ⟩
-            λg (
-              to (H A₁) ∘ eval′ ∘ (λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (to (H A)))) ∘ Category.id 𝒞 ⁂ Category.id 𝒞 ∘ from (H A))
-            )
-          ≈˘⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ ⁂∘⁂)) ⟩
-            λg (
-              to (H A₁) ∘ eval′ ∘ (λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (to (H A)))) ⁂ Category.id 𝒞) ∘ (Category.id 𝒞 ⁂ from (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (pullˡ β′)) ⟩
-            λg (
-              to (H A₁) ∘ (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (to (H A)))) ∘ (Category.id 𝒞 ⁂ from (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ assoc²') ⟩
-            λg (
-              to (H A₁) ∘ from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (to (H A))) ∘ (Category.id 𝒞 ⁂ from (H A))
-            )
-          ≈⟨ λ-cong (pullˡ (isoˡ (iso (H A₁)))) ⟩
-            λg (
-              Category.id 𝒞 ∘ eval′ ∘ (Category.id 𝒞 ⁂ (to (H A))) ∘ (Category.id 𝒞 ⁂ from (H A))
-            )
-          ≈⟨ λ-cong identityˡ ⟩
-            λg (
-              eval′ ∘ (Category.id 𝒞 ⁂ (to (H A))) ∘ (Category.id 𝒞 ⁂ from (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ ⁂∘⁂) ⟩
-            λg (
-              eval′ ∘ (Category.id 𝒞 ∘ Category.id 𝒞 ⁂ (to (H A)) ∘ from (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (⁂-cong₂ identity² (isoˡ (iso (H A))))) ⟩
-            λg (
-              eval′ ∘ ⟨ Category.id 𝒞 ∘ π₁ , Category.id 𝒞 ∘ π₂ ⟩
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (⟨⟩-cong₂ identityˡ identityˡ)) ⟩
-            λg (
-              eval′ ∘ ⟨ π₁ , π₂ ⟩
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ η) ⟩
-            λg (
-              eval′ ∘ Category.id 𝒞
-            )
-          ≈⟨ λ-cong identityʳ ⟩
-            λg eval′
-          ≈⟨ η-id′ ⟩
-            Category.id 𝒞
-          ∎
-        ; isoʳ =
-          begin
-            λg (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A)))
-            ∘
-            λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A)))
-          ≈⟨ CartesianClosed.exp.subst cartesianClosed product product ⟩
-            λg (
-              (from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A))) ∘ (λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A))) ⁂ Category.id 𝒞)
-            )
-          ≈⟨ λ-cong assoc²' ⟩
-            λg (
-              from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ to (H A)) ∘ (λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A))) ⁂ Category.id 𝒞)
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ ⁂∘⁂)) ⟩
-            λg (
-              from (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ∘ λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ from (H A))) ⁂ to (H A) ∘ Category.id 𝒞)
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ (⁂-cong₂ identityˡ identityʳ))) ⟩
-            λg (
-              from (H A₁) ∘ eval′ ∘ (λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (from (H A)))) ⁂ to (H A))
-            )
-          ≈˘⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ (⁂-cong₂ identityʳ identityˡ))) ⟩
-            λg (
-              from (H A₁) ∘ eval′ ∘ (λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (from (H A)))) ∘ Category.id 𝒞 ⁂ Category.id 𝒞 ∘ to (H A))
-            )
-          ≈˘⟨ λ-cong (∘-resp-≈ʳ (∘-resp-≈ʳ ⁂∘⁂)) ⟩
-            λg (
-              from (H A₁) ∘ eval′ ∘ (λg (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (from (H A)))) ⁂ Category.id 𝒞) ∘ (Category.id 𝒞 ⁂ to (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (pullˡ β′)) ⟩
-            λg (
-              from (H A₁) ∘ (to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (from (H A)))) ∘ (Category.id 𝒞 ⁂ to (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ assoc²') ⟩
-            λg (
-              from (H A₁) ∘ to (H A₁) ∘ eval′ ∘ (Category.id 𝒞 ⁂ (from (H A))) ∘ (Category.id 𝒞 ⁂ to (H A))
-            )
-          ≈⟨ λ-cong (pullˡ (isoʳ (iso (H A₁)))) ⟩
-            λg (
-              Category.id 𝒞 ∘ eval′ ∘ (Category.id 𝒞 ⁂ (from (H A))) ∘ (Category.id 𝒞 ⁂ to (H A))
-            )
-          ≈⟨ λ-cong identityˡ ⟩
-            λg (
-              eval′ ∘ (Category.id 𝒞 ⁂ (from (H A))) ∘ (Category.id 𝒞 ⁂ to (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ ⁂∘⁂) ⟩
-            λg (
-              eval′ ∘ (Category.id 𝒞 ∘ Category.id 𝒞 ⁂ (from (H A)) ∘ to (H A))
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (⁂-cong₂ identity² (isoʳ (iso (H A))))) ⟩
-            λg (
-              eval′ ∘ ⟨ Category.id 𝒞 ∘ π₁ , Category.id 𝒞 ∘ π₂ ⟩
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ (⟨⟩-cong₂ identityˡ identityˡ)) ⟩
-            λg (
-              eval′ ∘ ⟨ π₁ , π₂ ⟩
-            )
-          ≈⟨ λ-cong (∘-resp-≈ʳ η) ⟩
-            λg (
-              eval′ ∘ Category.id 𝒞
-            )
-          ≈⟨ λ-cong identityʳ ⟩
-            λg eval′
-          ≈⟨ η-id′ ⟩
-            Category.id 𝒞
-          ∎
-        }
-      }
+    H (A * A₁) = [ Product 𝒞 cartesian ]-resp-≅
+      (record
+        { from = from (H A) , from (H A₁)
+        ; to = to (H A) , to (H A₁)
+        ; iso = record { isoˡ = isoˡ (iso (H A)) , isoˡ (iso (H A₁)) ; isoʳ = isoʳ (iso (H A)) , isoʳ (iso (H A₁)) }
+        })
+    H (A => A₁) = [ Exp 𝒞 cartesianClosed ]-resp-≅
+      (record
+        { from = from (H A₁) , to (H A)
+        ; to = to (H A₁) , from (H A)
+        ; iso = record { isoˡ = isoˡ (iso (H A₁)) , isoˡ (iso (H A)) ; isoʳ = isoʳ (iso (H A₁)) , isoʳ (iso (H A)) }
+        })
 
   record homomorphism (M N : Model 𝒞 cartesianClosed Th) : Set (ℓ₁ ⊔ ℓ₂ ⊔ ℓ ⊔ e) where
     field
