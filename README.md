@@ -4,10 +4,10 @@ Categorical semantics of functional type theory with explicit substitutions, for
 
 This project depends on [agda-categories](https://github.com/agda/agda-categories) library.
 
-- The semantics is given by the correspondence between functional type theories and Cartesian Closed Categories (CCC).
-- We use de Bruijn index, as opposed to named variables, because we don't want to bother with α-equivalent terms.
+- The semantics is given by the correspondence between λ×-theories and Cartesian Closed Categories (CCC).
+- We use de Bruijn indices, as opposed to named variables, because we don't want to bother with α-equivalent terms.
 - We use explicit substitutions because shift/substitution are tedious to deal with, and more importantly, explicit substitutions scale to dependent type theories.
-- We don't consider untyped raw terms, only typed terms.
+- We don't consider untyped terms, only typed terms.
 
 ## Status
 
