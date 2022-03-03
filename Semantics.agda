@@ -33,10 +33,10 @@ module Semantics {o ℓ e}
 
   module I (⟦_⟧G : Gr -> Obj) where
     ⟦_⟧T : Type -> Obj
-    ⟦ PType.⌊ g ⌋ ⟧T = ⟦ g ⟧G
-    ⟦ PType.Unit ⟧T = T.⊤
-    ⟦ A PType.* A₁ ⟧T = ⟦ A ⟧T × ⟦ A₁ ⟧T
-    ⟦ A PType.=> A₁ ⟧T = ⟦ A ⟧T ⇨ ⟦ A₁ ⟧T
+    ⟦ ⌊ g ⌋ ⟧T = ⟦ g ⟧G
+    ⟦ Unit ⟧T = T.⊤
+    ⟦ A * A₁ ⟧T = ⟦ A ⟧T × ⟦ A₁ ⟧T
+    ⟦ A => A₁ ⟧T = ⟦ A ⟧T ⇨ ⟦ A₁ ⟧T
 
   record Structure : Set (o ⊔ ℓ ⊔ ℓ₁ ⊔ ℓ₂) where
     field
