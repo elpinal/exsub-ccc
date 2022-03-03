@@ -476,7 +476,7 @@ private
   helperS {γ = !} = trans (sym !-unique) !-unique
 
   satisfyAxiom : forall {Γ} {A} {e₁ e₂ : Γ ⊢ A} -> Ax Γ A e₁ e₂ -> ⟦ e₁ ⟧ ≈ ⟦ e₂ ⟧
-  satisfyAxiom {Γ} {A} {e₁} {e₂} x = trans (helper {e = e₁}) (trans (∘-resp-≈ʳ a) (sym (helper { e = e₂})))
+  satisfyAxiom {Γ} {A} {e₁} {e₂} x = trans (helper {e = e₁}) (trans (∘-resp-≈ʳ a) (sym (helper {e = e₂})))
     where
       a : (e₁ [ γC ]) ≈ (e₂ [ γC ])
       a = cong/sub refl (ax x)
